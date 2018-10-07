@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const Task = require('mongoose').model('Task');
+
 router.post('/task', (req, res) => {
     const contentType = req.headers['content-type'];
 

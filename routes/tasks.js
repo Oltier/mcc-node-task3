@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const Task = require('mongoose').model('Task');
+
 const task1 = {
     id: 1,
     name: "name1",

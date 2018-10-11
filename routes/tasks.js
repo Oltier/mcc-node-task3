@@ -34,7 +34,7 @@ router.get('/:id', (req, res) => {
     }
 });
 
-router.patch('/:id', (req, res) => {
+router.put('/:id', (req, res) => {
     const contentType = req.headers['content-type'];
 
     if(typeof contentType === 'undefined' || contentType !== 'application/x-www-form-urlencoded') {

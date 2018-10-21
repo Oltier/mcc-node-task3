@@ -1,26 +1,15 @@
 const express = require('express');
 const router = express.Router();
 
-const Task = require('mongoose').model('Task');
-
-const task1 = {
-    id: 1,
-    name: "name1",
-    created_date: new Date(),
-    status: "ok"
-};
-
-const task2 = {
-    id: 2,
-    name: "name2",
-    created_date: new Date(),
-    status: "ok"
-};
-
-const mockTasks = [task1, task2];
+const TaskService = require('../service/TaskService');
 
 router.get('/', (req, res) => {
-    res.json(mockTasks);
+    TaskService.findAll()
+        .then((tasks) => res.json(tasks))
+        .catch((err) => {
+            console.error(err);
+            res.sendStatus(500);
+        })
 });
 
 router.get('/:id', (req, res) => {

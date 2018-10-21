@@ -50,7 +50,7 @@ app.db = mongoose.connection;
 const server = app.listen(3000, 'localhost', function () {
     console.log('Server started.');
     app.db.on('error', function(){
-        console.error.bind(console, "Couldn't connect to database.");
+        console.error("Couldn't connect to database.");
         process.exit(1)
     });
     app.db.once('open', function () {

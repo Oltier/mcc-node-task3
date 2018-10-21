@@ -7,7 +7,7 @@ class TaskService {
     }
 
     static findById(id) {
-        return Task.find({_id: id});
+        return Task.findById(id);
     }
 
     static insert(task) {
@@ -15,11 +15,11 @@ class TaskService {
     }
 
     static update(id, task) {
-        return Task.updateOne({_id: id}, task);
+        return Task.findByIdAndUpdate(id, task);
     }
 
     static delete(id) {
-        return Task.deleteOne({_id: id});
+        return Task.findByIdAndDelete(id);
     }
 
 }

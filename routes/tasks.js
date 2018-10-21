@@ -13,20 +13,25 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const resp = mockTasks.filter(task => task.id === id);
-
-    if(resp.length === 0) {
-        res.sendStatus(404);
-    } else {
-        res.json(resp);
-    }
+    const id = req.params.id;
+    TaskService.findById(id)
+        .then((task) => {
+            if (task === null) {
+                res.sendStatus(404);
+            } else {
+                res.json(task)
+            }
+        })
+        .catch((err) => {
+            console.error(err);
+            res.sendStatus(500);
+        });
 });
 
 router.put('/:id', (req, res) => {
     const contentType = req.headers['content-type'];
 
-    if(typeof contentType === 'undefined' || contentType !== 'application/x-www-form-urlencoded') {
+    if (typeof contentType === 'undefined' || contentType !== 'application/x-www-form-urlencoded') {
         res.sendStatus(400);
         return;
     }

@@ -53,14 +53,18 @@ router.put('/:id', (req, res) => {
     Task.findByIdAndUpdate(id, updates, {new: true})
         .then((savedTask) => {
             // console.log(savedTask);
-            res.status(200);
-            res.json({
-                message: 'Task successfully updated',
-                id: savedTask._id,
-                name: savedTask.name,
-                created_date: savedTask.created_date,
-                status: savedTask.status
-            });
+            if (savedTask === null) {
+                res.sendStatus(400);
+            } else {
+                res.status(200);
+                res.json({
+                    message: 'Task successfully updated',
+                    id: savedTask._id,
+                    name: savedTask.name,
+                    created_date: savedTask.created_date,
+                    status: savedTask.status
+                });
+            }
         })
         .catch((err) => {
             console.error(err);
@@ -69,12 +73,21 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-    const id = 10;
+    const id = req.params.id;
+    if (typeof id === 'undefined') {
+        res.sendStatus(400);
+        return;
+    }
 
-    //TODO Not found
-
-    res.status(200);
-    res.json({message: 'Task successfully updated', id});
+    Task.findByIdAndRemove(id)
+        .then(() => {
+            res.status(200);
+            res.json({message: 'Task successfully deleted', id});
+        })
+        .catch(err => {
+            console.error(err);
+            res.sendStatus(500);
+        })
 });
 
 module.exports = router;

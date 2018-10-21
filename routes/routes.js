@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-const TaskService = require('../service/TaskService');
 const Task = require('mongoose').model('Task');
 
 router.post('/task', (req, res) => {
@@ -21,7 +20,7 @@ router.post('/task', (req, res) => {
     task.created_date = req.body.created_date;
     task.status = req.body.status;
 
-    TaskService.insert(task)
+    Task.create(task)
         .then(() => {
             res.set('Location', `/tasks/${task._id}`);
             res.status(201);

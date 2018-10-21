@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const TaskService = require('../service/TaskService');
+const Task = require('mongoose').model('Task');
 
 router.get('/', (req, res) => {
-    TaskService.findAll()
+    Task.find()
         .then((tasks) => res.json(tasks))
         .catch((err) => {
             console.error(err);
@@ -14,7 +14,12 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
     const id = req.params.id;
-    TaskService.findById(id)
+    if (typeof id === 'undefined') {
+        res.sendStatus(400);
+        return;
+    }
+
+    Task.findById(id)
         .then((task) => {
             if (task === null) {
                 res.sendStatus(404);
@@ -30,21 +35,37 @@ router.get('/:id', (req, res) => {
 
 router.put('/:id', (req, res) => {
     const contentType = req.headers['content-type'];
+    const id = req.params.id;
 
-    if (typeof contentType === 'undefined' || contentType !== 'application/x-www-form-urlencoded') {
+    const name = req.body.name;
+
+    if (typeof contentType === 'undefined' || contentType !== 'application/json' || typeof name === 'undefined' || typeof id === 'undefined') {
         res.sendStatus(400);
         return;
     }
 
-    //TODO Not found
+    const updates = {
+        name,
+        created_date: req.body.created_date || new Date(),
+        status: req.body.status || 'pending'
+    };
 
-    const id = 10;
-    const name = "name";
-    const created_date = new Date();
-    const status = "status";
-
-    res.status(200);
-    res.json({message: 'Task successfully updated', id, name, created_date, status});
+    Task.findByIdAndUpdate(id, updates, {new: true})
+        .then((savedTask) => {
+            // console.log(savedTask);
+            res.status(200);
+            res.json({
+                message: 'Task successfully updated',
+                id: savedTask._id,
+                name: savedTask.name,
+                created_date: savedTask.created_date,
+                status: savedTask.status
+            });
+        })
+        .catch((err) => {
+            console.error(err);
+            res.sendStatus(500);
+        })
 });
 
 router.delete('/:id', (req, res) => {
